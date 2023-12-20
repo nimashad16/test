@@ -1,0 +1,65 @@
+import React from 'react';
+import { Card, EditIcon, Grid, IconButton, Typography } from "@paycom/ui";
+import useConfigService from "../../../hooks/useConfigService";
+
+function PropertiesReview(props: { state: any }) {
+    const { state } = props;
+    const { getText } = useConfigService();
+    return <> {
+        <Card borderBox>
+            <div style={{ maxWidth: '100%', padding: '8px 8px 16px' }}>
+                <Grid container justify='space-between'>
+                    <Grid item>
+                        <Typography variant='h6' bold>
+                            {getText('propertiesText')}
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <IconButton
+                            id='editProperties'
+                            variant='icon'
+                            color='primary'
+                            description='edit'
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </Grid>
+                </Grid>
+            </div>
+            <div style={{ padding: '0px 8px 0px' }}>
+                <div style={{ marginBottom: '16px' }}> {/* Adjusted margin bottom value */}
+                    <Typography variant='caption' color="textSecondary">
+                        {getText('exceptionNameText')}
+                    </Typography>
+                    <Typography>
+                        {state.ExceptionName}
+                    </Typography>
+                </div>
+                <div style={{ marginBottom: '16px' }}>
+                    <Typography variant='caption' color="textSecondary">
+                        {getText('dateTypeText')}
+                    </Typography>
+                    <Typography>
+                        {state.selectedDateType}
+                    </Typography>
+                </div>
+                <div style={{ marginBottom: '16px' }}>
+                    <Typography variant='caption' color="textSecondary">
+                        {getText('applyIfThenLogicText')}
+                    </Typography>
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                    <Typography variant='caption' color="textSecondary">
+                        {getText('endRecurrenceText')}
+                    </Typography>
+                    <Typography>
+                        {state.recurrence}
+                    </Typography>
+                </div>
+            </div>
+
+        </Card>
+    }</>
+}
+
+export default PropertiesReview;
