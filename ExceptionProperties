@@ -1,0 +1,160 @@
+import React, { useState } from 'react';
+import { useOutletContext } from "react-router-dom";
+import {
+    Card,
+    DateInput,
+    Input,
+    Option,
+    Radio,
+    RadioGroup,
+    Select,
+    SelectOptionInterface,
+    Typography,
+    useValidator
+} from "@paycom/ui";
+import { Stack } from "@paycom/ui/experimental";
+import useConfigService from "../../hooks/useConfigService";
+import {
+    SET_END_RECURRENCE_DATE,
+    SET_EXCEPTION_DATE_TYPE,
+    SET_EXCEPTION_END,
+    SET_EXCEPTION_NAME, SET_EXCEPTION_RECURRENCE_APPLY_IF_THAN_LOGIC,
+    SET_EXCEPTION_START
+} from "../../service/reducers/actions";
+import { ExceptionTypes } from "../../utils/types/exceptionsTypes";
+import DateRangeProperties from "./DateRangeProperties";
+import DynamicDateProperties from "./DynamicDateProperties";
+import RecurrenceProperties from "./RecurrenceProperties";
+import SingleDateProperties from './SingleDateProperties';
+
+function ExceptionProperties() {
+    const { exceptionsState, exceptionsDispatch }: any = useOutletContext();
+    const { ExceptionName, DateType, RecurrenceEndDate } = exceptionsState;
+
+    const { getText } = useConfigService();
+    const [recurrence, setRecurrence] = useState('false');
+    const [selectedDateType] = useState<SelectOptionInterface>();
+
+    const requiredIndicator = <span style={{ color: "red" }}> * </span>;
+
+    const exceptionNameValidator: any = useValidator(
+        ExceptionName,
+        "Text",
+        { allowWhitespace: true, maxLength: 250 }
+    );
+
+    const exceptionNameErrorMessage: any = exceptionNameValidator.errors?.invalidCharacters;
+
+    const handleExceptionNameInputChange = (e: any) => {
+        const name = e.target.value;
+        exceptionsDispatch({ type: SET_EXCEPTION_NAME, payload: name })
+    }
+
+    const handleRecurrenceChange = (input: string) => {
+        console.log(exceptionsState)
+        setRecurrence(input);
+    }
+
+    const handleDateTypeChange = (input: any) => {
+        exceptionsDispatch({ type: SET_EXCEPTION_DATE_TYPE, payload: input.value })
+        exceptionsDispatch({ type: SET_EXCEPTION_START, payload: '' })
+        exceptionsDispatch({ type: SET_EXCEPTION_END, payload: '' })
+        exceptionsDispatch({ type: SET_EXCEPTION_RECURRENCE_APPLY_IF_THAN_LOGIC, payload: '0' })
+    }
+
+    const renderDateTypeProperties = () => {
+        const type = (DateType) || ExceptionTypes.invalid;
+        if (type === ExceptionTypes.single) {
+            return <SingleDateProperties state={exceptionsState} dispatch={exceptionsDispatch} viewOnlyMode={false} />
+        }
+
+        if (type === ExceptionTypes.dateRange) {
+            return <DateRangeProperties viewOnlyMode={false} />
+        }
+
+        if (type === ExceptionTypes.recurrence) {
+            return <RecurrenceProperties state={exceptionsState} dispatch={exceptionsDispatch} viewOnlyMode={false} />
+        }
+
+        if (type === ExceptionTypes.dynamicDate) {
+            return <DynamicDateProperties state={exceptionsState} dispatch={exceptionsDispatch} viewOnlyMode={false} />
+        }
+
+        return null;
+    }
+
+    return (
+        <Card>
+            <div style={{ maxWidth: '500px', padding: '16px' }}>
+                <Stack space='medium'>
+                    <Typography variant='h6' bold>
+                        {getText('propertiesText')}
+                    </Typography>
+
+                    <Typography variant="caption" color="textSecondary">
+                        {requiredIndicator} {getText("indicatesRequiredFieldText")}
+                    </Typography>
+
+                    <Input
+                        id='exception-name'
+                        label='Exception Name'
+                        type='text'
+                        maxLength={250}
+                        value={ExceptionName}
+                        error={exceptionNameErrorMessage}
+                        onChange={handleExceptionNameInputChange}
+                        required
+                        outlined
+                        maxWidth="275px"
+                    />
+
+                    <Select
+                        label="Date Type"
+                        id="exception-type"
+                        value={selectedDateType}
+                        onChange={(event, value) => handleDateTypeChange(value)}
+                        outlined
+                        nonNative
+                        required
+                        maxWidth="275px"
+                    >
+                        <Option value={ExceptionTypes.single} label='Single Day' />
+                        <Option value={ExceptionTypes.dateRange} label='Date Range' />
+                        <Option value={ExceptionTypes.recurrence} label='Recurrence' />
+                        { /* will be added in future project */}
+                        { /* <Option value={ExceptionTypes.dynamicDate} label='Dynamic Date'/> */}
+                    </Select>
+
+                    {renderDateTypeProperties()}
+
+                    <RadioGroup
+                        id="end-recurrence"
+                        label='End Recurrence'
+                        value={recurrence}
+                        onChange={event => handleRecurrenceChange((event.target as HTMLInputElement).value)}
+                        row
+                        required
+                    >
+                        <Radio label='Never' value='false' />
+                        <Radio label='On Date' value='true' />
+                    </RadioGroup>
+
+                    {recurrence === "true" ?
+                        <DateInput
+                            id="startDateSelect"
+                            label="Date"
+                            required
+                            outlined
+                            preventOverflow
+                            maxWidth="275px"
+                            value={RecurrenceEndDate?.substring(0, 10) ?? ''}
+                            onChange={(value) => exceptionsDispatch({ type: SET_END_RECURRENCE_DATE, payload: new Date(value).toISOString() })}
+                        /> : null
+                    }
+                </Stack>
+            </div>
+        </Card>
+
+    )
+}
+export default ExceptionProperties;
