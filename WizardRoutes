@@ -1,0 +1,65 @@
+import React from 'react';
+import ExceptionProperties from "../components/ExceptionWizard/ExceptionProperties";
+import ExceptionRules from '../components/ExceptionWizard/ExceptionRules';
+import AssignedApprovalRules from "../components/ExceptionWizard/StepThree/AssignedApprovalRules";
+import BatchEditWizard from "../pages/BatchEditWizard";
+import ChangeHistory from '../pages/ChangeHistory';
+import CoverageGroup from '../pages/CoverageGroup';
+import DecisionRules from '../pages/DecisionRules';
+import ExceptionsLandingPage from '../pages/ExceptionsLandingPage';
+
+import ExceptionsReviews from '../pages/ExceptionsReview';
+
+import ExceptionWizard from '../pages/ExceptionWizard';
+import LandingPage from '../pages/LandingPage';
+import SpecificDateExceptions from '../pages/SpecificDateExceptions';
+import Wizard from '../pages/Wizard';
+
+
+
+
+const innerRoutes = [
+  { path: '', element: <CoverageGroup /> },
+  { path: 'decisionRules', element: <DecisionRules /> },
+  { path: 'specificDateExceptions', element: <SpecificDateExceptions /> },
+];
+
+const exceptionWizardInnerRoutes = [
+  { path: 'ewizard', element: <ExceptionProperties/>},
+  { path: '', element: <ExceptionProperties/>},
+  { path: 'exceptionRules', element: <ExceptionRules/>},
+  { path: 'approvalRules', element: <AssignedApprovalRules/>},
+  { path: 'review', element: <ExceptionsReviews/> }
+];
+
+const wizardRoutes = [
+  {
+    path: '/v2',
+    element: <LandingPage />,
+  },
+  {
+    path: '/v2/rule',
+    element: <Wizard />,
+    children: innerRoutes,
+  },
+  {
+    path: '/v2/batch',
+    element: <BatchEditWizard />,
+    children: innerRoutes,
+  },
+  {
+    path: '/v2/history',
+    element: <ChangeHistory />,
+  },
+  {
+    path: '/v2/exceptions',
+    element: <ExceptionsLandingPage />,
+  },
+  {
+    path: 'v2/exceptions/ewizard',
+    element: <ExceptionWizard />,
+    children: exceptionWizardInnerRoutes,
+  },
+];
+
+export default wizardRoutes;
