@@ -1,0 +1,56 @@
+import React from 'react';
+import { useOutletContext } from 'react-router-dom';
+import ApprovalRulesReview from '../components/ExceptionWizard/StepFour/ApprovalRulesReview';
+import AutoDenyOptionsReview from '../components/ExceptionWizard/StepFour/AutoDenyOptionsReview';
+import ConsecutiveDaysRequestedReview from '../components/ExceptionWizard/StepFour/ConsecutiveDaysRequestedReview';
+import CoverageThresholdReview from '../components/ExceptionWizard/StepFour/CoverageThresholdReview';
+import PropertiesReview from '../components/ExceptionWizard/StepFour/PropertiesReview';
+import ShowRequestReview from '../components/ExceptionWizard/StepFour/ShowRequestReview';
+import SubmissionTimeReview from '../components/ExceptionWizard/StepFour/SubmissionTimeReview';
+
+
+function ExceptionsReviews() {
+
+    const { exceptionsState }: any = useOutletContext();
+    return (
+        <>
+            <div style={{ padding: '0px 0px 8px' }}>
+                <PropertiesReview
+                    state={exceptionsState}
+                />
+            </div>
+            <div style={{ padding: '8px 0px 8px' }}>
+                <CoverageThresholdReview
+                   // state={exceptionsState}
+                />
+            </div>
+            <div style={{ padding: '8px 0px 8px' }}>
+                <ConsecutiveDaysRequestedReview
+                // state={exceptionsState}
+                />
+            </div>
+            <div style={{ padding: '8px 0px 8px' }}>
+                <SubmissionTimeReview
+                    // state={exceptionsState}
+                />
+            </div>
+            <div style={{ padding: '8px 0px 8px' }}>
+                <AutoDenyOptionsReview
+                // state={exceptionsState}
+                />
+            </div>
+            <div style={{ padding: '8px 0px 8px' }}>
+                <ShowRequestReview
+                   // state={exceptionsState}
+                />
+            </div>
+            <div style={{ padding: '8px 0px 8px' }}>
+                <ApprovalRulesReview
+                     state={exceptionsState}
+                />
+            </div>
+        </>
+    );
+
+}
+export default ExceptionsReviews;
